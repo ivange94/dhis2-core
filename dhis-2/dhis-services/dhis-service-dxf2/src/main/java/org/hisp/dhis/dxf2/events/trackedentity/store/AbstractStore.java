@@ -1,5 +1,3 @@
-package org.hisp.dhis.dxf2.events.enrollment;
-
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
@@ -28,64 +26,30 @@ package org.hisp.dhis.dxf2.events.enrollment;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.program.ProgramStatus;
+package org.hisp.dhis.dxf2.events.trackedentity.store;
+
+import java.util.List;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 /**
- * FIXME we should probably remove this, and replace it with program status
- *
- * @author Morten Olav Hansen <mortenoh@gmail.com>
+ * @author Luciano Fiandesio
  */
-public enum EnrollmentStatus
+public class AbstractStore
 {
-    ACTIVE( 0, ProgramStatus.ACTIVE ),
-    COMPLETED( 1, ProgramStatus.COMPLETED ),
-    CANCELLED( 2, ProgramStatus.CANCELLED );
+    protected final NamedParameterJdbcTemplate jdbcTemplate;
 
-    private final int value;
-    private final ProgramStatus programStatus;
-
-    EnrollmentStatus( int value, ProgramStatus programStatus )
+    public AbstractStore( JdbcTemplate jdbcTemplate )
     {
-        this.value = value;
-        this.programStatus = programStatus;
+        this.jdbcTemplate = new NamedParameterJdbcTemplate( jdbcTemplate );
     }
 
-    public int getValue()
+    MapSqlParameterSource createIdsParam( List<Long> ids )
     {
-        return value;
-    }
-
-    public ProgramStatus getProgramStatus()
-    {
-        return programStatus;
-    }
-
-    public static EnrollmentStatus fromProgramStatus( ProgramStatus programStatus )
-    {
-        switch ( programStatus )
-        {
-            case ACTIVE:
-                return ACTIVE;
-            case CANCELLED:
-                return CANCELLED;
-            case COMPLETED:
-                return COMPLETED;
-        }
-
-        throw new IllegalArgumentException( "Enum value not found: " + programStatus );
-    }
-
-    public static EnrollmentStatus fromStatusString( String status )
-    {
-        switch ( status )
-        {
-        case "ACTIVE":
-            return ACTIVE;
-        case "CANCELLED":
-            return CANCELLED;
-        case "COMPLETED":
-            return COMPLETED;
-        }
-        throw new IllegalArgumentException( "Enum value not found for string: " + status );
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue( "ids", ids );
+        return parameters;
     }
 }

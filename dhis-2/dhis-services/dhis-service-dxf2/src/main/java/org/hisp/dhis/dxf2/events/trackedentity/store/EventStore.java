@@ -1,4 +1,4 @@
-package org.hisp.dhis.dxf2.events.enrollment;
+package org.hisp.dhis.dxf2.events.trackedentity.store;
 
 /*
  * Copyright (c) 2004-2019, University of Oslo
@@ -28,64 +28,33 @@ package org.hisp.dhis.dxf2.events.enrollment;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.program.ProgramStatus;
+import java.util.List;
+
+import org.hisp.dhis.dxf2.events.event.DataValue;
+import org.hisp.dhis.dxf2.events.event.Event;
+
+import com.google.common.collect.Multimap;
 
 /**
- * FIXME we should probably remove this, and replace it with program status
- *
- * @author Morten Olav Hansen <mortenoh@gmail.com>
+ * @author Luciano Fiandesio
  */
-public enum EnrollmentStatus
+public interface EventStore
 {
-    ACTIVE( 0, ProgramStatus.ACTIVE ),
-    COMPLETED( 1, ProgramStatus.COMPLETED ),
-    CANCELLED( 2, ProgramStatus.CANCELLED );
+    /**
+     * Key: enrollment uid -> Value: Event
+     *
+     * @param enrollmentsId
+     * @return
+     */
+    Multimap<String, Event> getEvents( List<Long> enrollmentsId );
 
-    private final int value;
-    private final ProgramStatus programStatus;
+    /**
+     *
+     * Key: event uid -> Value: DataValue
+     *
+     * @param enrollmentsId
+     * @return
+     */
+    Multimap<String, List<DataValue>> getDataValues( List<Long> enrollmentsId );
 
-    EnrollmentStatus( int value, ProgramStatus programStatus )
-    {
-        this.value = value;
-        this.programStatus = programStatus;
-    }
-
-    public int getValue()
-    {
-        return value;
-    }
-
-    public ProgramStatus getProgramStatus()
-    {
-        return programStatus;
-    }
-
-    public static EnrollmentStatus fromProgramStatus( ProgramStatus programStatus )
-    {
-        switch ( programStatus )
-        {
-            case ACTIVE:
-                return ACTIVE;
-            case CANCELLED:
-                return CANCELLED;
-            case COMPLETED:
-                return COMPLETED;
-        }
-
-        throw new IllegalArgumentException( "Enum value not found: " + programStatus );
-    }
-
-    public static EnrollmentStatus fromStatusString( String status )
-    {
-        switch ( status )
-        {
-        case "ACTIVE":
-            return ACTIVE;
-        case "CANCELLED":
-            return CANCELLED;
-        case "COMPLETED":
-            return COMPLETED;
-        }
-        throw new IllegalArgumentException( "Enum value not found for string: " + status );
-    }
 }

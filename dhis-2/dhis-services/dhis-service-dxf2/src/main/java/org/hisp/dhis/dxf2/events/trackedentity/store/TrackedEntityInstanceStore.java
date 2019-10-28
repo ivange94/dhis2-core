@@ -1,5 +1,3 @@
-package org.hisp.dhis.dxf2.events.enrollment;
-
 /*
  * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
@@ -28,64 +26,42 @@ package org.hisp.dhis.dxf2.events.enrollment;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.hisp.dhis.program.ProgramStatus;
+package org.hisp.dhis.dxf2.events.trackedentity.store;
+
+import com.google.common.collect.Multimap;
+import org.hisp.dhis.dxf2.events.trackedentity.Attribute;
+import org.hisp.dhis.dxf2.events.trackedentity.Relationship;
+import org.hisp.dhis.dxf2.events.trackedentity.TrackedEntityInstance;
+
+import java.util.List;
+import java.util.Map;
 
 /**
- * FIXME we should probably remove this, and replace it with program status
- *
- * @author Morten Olav Hansen <mortenoh@gmail.com>
+ * @author Luciano Fiandesio
  */
-public enum EnrollmentStatus
+public interface TrackedEntityInstanceStore
 {
-    ACTIVE( 0, ProgramStatus.ACTIVE ),
-    COMPLETED( 1, ProgramStatus.COMPLETED ),
-    CANCELLED( 2, ProgramStatus.CANCELLED );
+    /**
+     * Get a List of {@see TrackedEntityInstance} by primary key
+     *
+     * @param ids a List of Long
+     * @return a List of {@see TrackedEntityInstance}
+     */
+    Map<String, TrackedEntityInstance> getTrackedEntityInstances( List<Long> ids );
 
-    private final int value;
-    private final ProgramStatus programStatus;
+    /**
+     * Fetches all the relationships having the TEI id specified in the arg as
+     * "left" or "right" relationship
+     *
+     * @param ids a list of Tracked Entity Instance Primary Keys
+     * @return a List of {@see Relationship} objects
+     */
+    Multimap<String, Relationship> getRelationships( List<Long> ids );
 
-    EnrollmentStatus( int value, ProgramStatus programStatus )
-    {
-        this.value = value;
-        this.programStatus = programStatus;
-    }
-
-    public int getValue()
-    {
-        return value;
-    }
-
-    public ProgramStatus getProgramStatus()
-    {
-        return programStatus;
-    }
-
-    public static EnrollmentStatus fromProgramStatus( ProgramStatus programStatus )
-    {
-        switch ( programStatus )
-        {
-            case ACTIVE:
-                return ACTIVE;
-            case CANCELLED:
-                return CANCELLED;
-            case COMPLETED:
-                return COMPLETED;
-        }
-
-        throw new IllegalArgumentException( "Enum value not found: " + programStatus );
-    }
-
-    public static EnrollmentStatus fromStatusString( String status )
-    {
-        switch ( status )
-        {
-        case "ACTIVE":
-            return ACTIVE;
-        case "CANCELLED":
-            return CANCELLED;
-        case "COMPLETED":
-            return COMPLETED;
-        }
-        throw new IllegalArgumentException( "Enum value not found for string: " + status );
-    }
+    /**
+     *
+     * @param ids @param ids a list of Tracked Entity Instance Primary Keys
+     * @returna List of {@see Attribute} objects
+     */
+    Multimap<String, Attribute> getAttributes( List<Long> ids );
 }
