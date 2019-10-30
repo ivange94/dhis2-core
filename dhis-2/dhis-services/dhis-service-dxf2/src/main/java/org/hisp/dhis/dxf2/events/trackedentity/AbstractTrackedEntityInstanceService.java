@@ -32,6 +32,7 @@ import static org.hisp.dhis.system.notification.NotificationLevel.ERROR;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -48,11 +49,7 @@ import org.hisp.dhis.dxf2.events.TrackerAccessManager;
 import org.hisp.dhis.dxf2.events.aggregates.TrackedEntityInstanceAggregate;
 import org.hisp.dhis.dxf2.events.enrollment.Enrollment;
 import org.hisp.dhis.dxf2.events.enrollment.EnrollmentService;
-import org.hisp.dhis.dxf2.events.event.Event;
 import org.hisp.dhis.dxf2.events.repository.TrackedEntityAttributeRepository;
-import org.hisp.dhis.dxf2.events.trackedentity.store.EnrollmentStore;
-import org.hisp.dhis.dxf2.events.trackedentity.store.EventStore;
-import org.hisp.dhis.dxf2.events.trackedentity.store.TrackedEntityInstanceStore;
 import org.hisp.dhis.dxf2.importsummary.ImportConflict;
 import org.hisp.dhis.dxf2.importsummary.ImportStatus;
 import org.hisp.dhis.dxf2.importsummary.ImportSummaries;
@@ -90,7 +87,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
 import com.vividsolutions.jts.geom.Geometry;
 
 /**
