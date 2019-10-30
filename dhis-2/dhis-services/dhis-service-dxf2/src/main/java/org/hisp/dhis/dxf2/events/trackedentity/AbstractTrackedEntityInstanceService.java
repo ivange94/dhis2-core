@@ -1482,65 +1482,8 @@ public abstract class AbstractTrackedEntityInstanceService
 
     private List<TrackedEntityInstance> getTeis( List<Long> trackedEntityInstanceIds, TrackedEntityInstanceParams params )
     {
-
-
         return trackedEntityInstanceAggregate.find(trackedEntityInstanceIds, params);
-
-
-//        List<TrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
-//
-//        // aggregate 1 -> TEI
-//        // teis
-//        Map<String, TrackedEntityInstance> teis = trackedEntityInstanceStore
-//            .getTrackedEntityInstances( trackedEntityInstanceIds );
-//
-//        // relationships for tei
-//        Multimap<String, Relationship> teiRel = trackedEntityInstanceStore.getRelationships( trackedEntityInstanceIds );
-//
-//        // tei attributes
-//        Multimap<String, Attribute> attributes = trackedEntityInstanceStore.getAttributes( trackedEntityInstanceIds );
-//
-//        // aggregate 2 -> Enrollemnts
-//
-//        Multimap<String, Enrollment> enrollmentsList = enrollmentStore.getEnrollments( trackedEntityInstanceIds );
-//
-//        List<Long> enrollmentIds = enrollmentsList.values().stream().map( Enrollment::getId )
-//            .collect( Collectors.toList() );
-//
-//        // aggregate 3 -> Events
-//
-//        Multimap<String, Event> events = eventStore.getEvents( enrollmentIds );
-//
-//
-//        // Assembling enrollments
-//        for ( String uid : enrollmentsList.keySet() )
-//        {
-//
-//            Collection<Enrollment> enrollments = enrollmentsList.get( uid );
-//            for ( Enrollment enrollment : enrollments )
-//            {
-//                enrollment.setEvents( new ArrayList<>( events.get( enrollment.getEnrollment() ) ) );
-//            }
-//
-//        }
-//
-//
-//        // Assembling tei
-//        for ( String uid : teis.keySet() )
-//        {
-//            TrackedEntityInstance tei = teis.get( uid );
-//            tei.setEnrollments( new ArrayList<>( enrollmentsList.get( uid ) ) );
-//            tei.setAttributes( new ArrayList<>( attributes.get( uid ) ) );
-//            tei.setRelationships( new ArrayList<>( teiRel.get( uid )));
-//            trackedEntityInstances.add( tei );
-//        }
-//
-//
-//        return trackedEntityInstances;
     }
-
-
-
 
     private TrackedEntityInstance getTei( org.hisp.dhis.trackedentity.TrackedEntityInstance daoTrackedEntityInstance,
         Set<TrackedEntityAttribute> readableAttributes, TrackedEntityInstanceParams params, User user )
@@ -1643,23 +1586,19 @@ public abstract class AbstractTrackedEntityInstanceService
 
         if ( params.isDataSynchronizationQuery() )
         {
-            List<String> programs = trackedEntityInstance.getEnrollments().stream()
-                .map( Enrollment::getProgram )
+            List<String> programs = trackedEntityInstance.getEnrollments().stream().map( Enrollment::getProgram )
                 .collect( Collectors.toList() );
 
-            readableAttributesCopy = readableAttributes.stream()
-                .filter( att -> !att.getSkipSynchronization() )
-                .collect( Collectors.toSet() ) ;
+            readableAttributesCopy = readableAttributes.stream().filter( att -> !att.getSkipSynchronization() )
+                .collect( Collectors.toSet() );
 
             IdSchemes idSchemes = new IdSchemes();
             for ( String programUid : programs )
             {
                 Program program = getProgram( idSchemes, programUid );
 
-                readableAttributesCopy.addAll(
-                    program.getTrackedEntityAttributes().stream()
-                        .filter( att -> !att.getSkipSynchronization() )
-                        .collect( Collectors.toSet() ) );
+                readableAttributesCopy.addAll( program.getTrackedEntityAttributes().stream()
+                    .filter( att -> !att.getSkipSynchronization() ).collect( Collectors.toSet() ) );
             }
         }
         else
